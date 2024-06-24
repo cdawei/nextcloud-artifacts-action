@@ -4,7 +4,6 @@ import * as core from '@actions/core'
 import * as os from 'os'
 import * as archiver from 'archiver'
 import fetch, { HeadersInit } from 'node-fetch'
-import btoa from 'btoa'
 import { v4 as uuidv4 } from 'uuid'
 import * as webdav from 'webdav'
 import { URL } from 'url'
@@ -26,7 +25,8 @@ export class NextcloudClient {
     private artifact: string,
     private rootDirectory: string,
     private username: string,
-    private password: string
+    private password: string,
+    private nozip: boolean
   ) {
     this.guid = uuidv4()
     this.headers = { Authorization: 'Basic ' + Buffer.from(`${this.username}:${this.password}`).toString('base64') }
@@ -40,8 +40,16 @@ export class NextcloudClient {
   async uploadFiles(files: string[]): Promise<string> {
     core.info('Preparing upload...')
     const spec = this.uploadSpec(files)
-    core.info('Zipping files...')
-    const zip = await this.zipFiles(spec)
+    let zip
+
+    if (this.nozip) {
+      if (spec.length > 1) throw Error('no-zip is incompatible with multiple file uploads.')
+      zip = spec[0].absolutePath
+    } else {
+      core.info('Zipping files...')
+      zip = await this.zipFiles(spec)
+    }
+
     try {
       core.info('Uploading to Nextcloud...')
       const filePath = await this.upload(zip)
