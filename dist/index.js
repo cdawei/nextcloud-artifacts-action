@@ -604,7 +604,7 @@ class NextcloudClient {
         }
         const remoteFilePath = `${remoteFileDir}/${this.artifact}${this.nozip ? '' : '.zip'}`;
         core.debug(`Transferring file... (${file})`);
-        await this.davClient.putFileContents(remoteFilePath, await fs.readFile(file));
+        await this.davClient.putFileContents(remoteFilePath, fsSync.createReadStream(file));
         return remoteFilePath;
     }
     async shareFile(remoteFilePath) {
