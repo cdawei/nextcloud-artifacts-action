@@ -8,7 +8,11 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -49,6 +53,9 @@ class ActionInputs {
     get Token() {
         return core.getInput('token', { required: true });
     }
+    get NoZip() {
+        return Boolean(core.getInput('no-zip', { required: false }));
+    }
     get NoFileBehvaior() {
         const notFoundAction = core.getInput('if-no-files-found', { required: false }) || NoFileOption_1.NoFileOption.warn;
         const noFileBehavior = NoFileOption_1.NoFileOption[notFoundAction];
@@ -70,7 +77,11 @@ exports.ActionInputs = ActionInputs;
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -89,12 +100,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FileFinder = void 0;
-const glob = __importStar(__nccwpck_require__(8090));
-const fs_1 = __nccwpck_require__(5747);
-const core_1 = __nccwpck_require__(2186);
-const path = __importStar(__nccwpck_require__(5622));
-const util_1 = __nccwpck_require__(1669);
-const stats = util_1.promisify(fs_1.stat);
+const glob = __importStar(__nccwpck_require__(203));
+const fs_1 = __nccwpck_require__(7147);
+const core_1 = __nccwpck_require__(3722);
+const path = __importStar(__nccwpck_require__(1017));
+const util_1 = __nccwpck_require__(3837);
+const stats = (0, util_1.promisify)(fs_1.stat);
 class FileFinder {
     constructor(searchPath, globOptions) {
         this.searchPath = searchPath;
@@ -117,26 +128,26 @@ class FileFinder {
             const fileStats = await stats(searchResult);
             // isDirectory() returns false for symlinks if using fs.lstat(), make sure to use fs.stat() instead
             if (!fileStats.isDirectory()) {
-                core_1.debug(`File:${searchResult} was found using the provided searchPath`);
+                (0, core_1.debug)(`File:${searchResult} was found using the provided searchPath`);
                 searchResults.push(searchResult);
                 // detect any files that would be overwritten because of case insensitivity
                 if (set.has(searchResult.toLowerCase())) {
-                    core_1.info(`Uploads are case insensitive: ${searchResult} was detected that it will be overwritten by another file with the same path`);
+                    (0, core_1.info)(`Uploads are case insensitive: ${searchResult} was detected that it will be overwritten by another file with the same path`);
                 }
                 else {
                     set.add(searchResult.toLowerCase());
                 }
             }
             else {
-                core_1.debug(`Removing ${searchResult} from rawSearchResults because it is a directory`);
+                (0, core_1.debug)(`Removing ${searchResult} from rawSearchResults because it is a directory`);
             }
         }
         // Calculate the root directory for the artifact using the search paths that were utilized
         const searchPaths = globber.getSearchPaths();
         if (searchPaths.length > 1) {
-            core_1.info(`Multiple search paths detected. Calculating the least common ancestor of all paths`);
+            (0, core_1.info)(`Multiple search paths detected. Calculating the least common ancestor of all paths`);
             const lcaSearchPath = this.getMultiPathLCA(searchPaths);
-            core_1.info(`The least common ancestor is ${lcaSearchPath}. This will be the root directory of the artifact`);
+            (0, core_1.info)(`The least common ancestor is ${lcaSearchPath}. This will be the root directory of the artifact`);
             return {
                 filesToUpload: searchResults,
                 rootDirectory: lcaSearchPath
@@ -166,7 +177,7 @@ class FileFinder {
         let smallestPathLength = Number.MAX_SAFE_INTEGER;
         // split each of the search paths using the platform specific separator
         for (const searchPath of searchPaths) {
-            core_1.debug(`Using search path ${searchPath}`);
+            (0, core_1.debug)(`Using search path ${searchPath}`);
             const splitSearchPath = path.normalize(searchPath).split(path.sep);
             // keep track of the smallest path length so that we don't accidentally later go out of bounds
             smallestPathLength = Math.min(smallestPathLength, splitSearchPath.length);
@@ -243,7 +254,11 @@ var NoFileOption;
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -286,7 +301,11 @@ run();
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -364,10 +383,11 @@ class NextcloudArtifact {
             },
             ...github.context.repo
         });
-        const client = new NextcloudClient_1.NextcloudClient(this.inputs.Endpoint, this.name, files.rootDirectory, this.inputs.Username, this.inputs.Password);
+        const client = new NextcloudClient_1.NextcloudClient(this.inputs.Endpoint, this.name, files.rootDirectory, this.inputs.Username, this.inputs.Password, this.inputs.NoZip);
         try {
             const shareableUrl = await client.uploadFiles(files.filesToUpload);
             core.setOutput('SHAREABLE_URL', shareableUrl);
+            core.setOutput('DIRECT_SHAREABLE_URL', `${shareableUrl}/download`);
             core.info(`Nextcloud shareable URL: ${shareableUrl}`);
             const resp = await this.octokit.rest.checks.update({
                 check_run_id: createResp.data.id,
@@ -445,7 +465,11 @@ exports.NextcloudArtifact = NextcloudArtifact;
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -477,13 +501,14 @@ const uuid_1 = __nccwpck_require__(5840);
 const webdav = __importStar(__nccwpck_require__(4032));
 const fs = fsSync.promises;
 class NextcloudClient {
-    constructor(endpoint, artifact, rootDirectory, username, password) {
+    constructor(endpoint, artifact, rootDirectory, username, password, nozip) {
         this.endpoint = endpoint;
         this.artifact = artifact;
         this.rootDirectory = rootDirectory;
         this.username = username;
         this.password = password;
-        this.guid = uuid_1.v4();
+        this.nozip = nozip;
+        this.guid = (0, uuid_1.v4)();
         this.headers = { Authorization: 'Basic ' + Buffer.from(`${this.username}:${this.password}`).toString('base64') };
         this.davClient = webdav.createClient(`${this.endpoint.href}remote.php/dav/files/${this.username}`, {
             username: this.username,
@@ -494,8 +519,16 @@ class NextcloudClient {
     async uploadFiles(files) {
         core.info('Preparing upload...');
         const spec = this.uploadSpec(files);
-        core.info('Zipping files...');
-        const zip = await this.zipFiles(spec);
+        let zip;
+        if (this.nozip) {
+            if (spec.length > 1)
+                throw Error('no-zip is incompatible with multiple file uploads.');
+            zip = spec[0].absolutePath;
+        }
+        else {
+            core.info('Zipping files...');
+            zip = await this.zipFiles(spec);
+        }
         try {
             core.info('Uploading to Nextcloud...');
             const filePath = await this.upload(zip);
@@ -570,9 +603,9 @@ class NextcloudClient {
         if (!(await this.davClient.exists(remoteFileDir))) {
             await this.davClient.createDirectory(remoteFileDir, { recursive: true });
         }
-        const remoteFilePath = `${remoteFileDir}/${this.artifact}.zip`;
+        const remoteFilePath = `${remoteFileDir}/${this.artifact}${this.nozip ? '' : '.zip'}`;
         core.debug(`Transferring file... (${file})`);
-        await this.davClient.putFileContents(remoteFilePath, await fs.readFile(file));
+        await this.davClient.putFileContents(remoteFilePath, fsSync.createReadStream(file));
         return remoteFilePath;
     }
     async shareFile(remoteFilePath) {
@@ -583,7 +616,7 @@ class NextcloudClient {
             publicUpload: 'false',
             permissions: 1
         };
-        const res = await node_fetch_1.default(url, {
+        const res = await (0, node_fetch_1.default)(url, {
             method: 'POST',
             headers: Object.assign(this.headers, {
                 'OCS-APIRequest': true,
